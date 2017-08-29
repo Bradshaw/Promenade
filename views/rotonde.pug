@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  .holder(style = "background-color: "+profile.color+";")
+    .profile
+      .sides
+        img(src = profile.avatar).avatar
+        .portal
+          h4= profile.name+" suggests the following"
+          each url in portal
+            .link
+              a(href = "/"+url.replace("http://",""))= url.replace("http://","")
+      .text
+        h1= profile.name
+        if profile.position && profile.location
+          a(href = "https://www.openstreetmap.org/#map=6/"+profile.position.replace(", ","/"))= profile.location
+    each entry in feed
+      .entry
+        if entry.media
+          .img(style = "background-image: url("+entry.media+")")
+        .text
+          if entry.topic
+            h3= entry.topic
+              if entry.task
+                sub= entry.task
+          p= entry.text
+        .extra
+          if entry.url
+            a(href = entry.url) More
+          if entry.data
+            each value, key in entry.data
+              .value
+                .overlay(style = "width: "+(value*100)+"%;")= (key+": "+value)
+                  
