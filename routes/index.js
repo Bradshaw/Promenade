@@ -12,11 +12,15 @@ router.get('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/:url', function(req, res, next) {
-  console.log(req.params.url);
-  http.get('http://'+req.params.url, (hres) => {
+  http.get(
+    {
+        host: req.params.url,
+        headers: {
+          accept: 'application/json'
+        }
+    }, (hres) => {
     const { statusCode } = hres;
     const contentType = hres.headers['content-type'];
-
     let error;
     if (statusCode !== 200) {
       error = new Error('Request Failed.\n' +
