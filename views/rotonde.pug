@@ -19,10 +19,6 @@ block content
         if entry.media
           .img(style = "background-image: url("+entry.media+")")
         .text
-          if entry.topic
-            h3= entry.topic
-              if entry.task
-                sub= entry.task
           p= entry.text
         .extra
           if entry.url
