@@ -7,7 +7,10 @@ var starturl = 'rotonde.nanoleptic.net';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {url: starturl});
+  res.writeHead(302, {
+    'Location': "/"+starturl
+  });
+  res.end();
 });
 
 /* GET home page. */
