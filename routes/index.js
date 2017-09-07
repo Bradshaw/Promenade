@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var http = require('http');
+var auth = require('basic-auth')
 
 
-var starturl = 'rotonde.nanoleptic.net';
+var starturl = 'logs.spaceshipsin.space';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -12,6 +13,18 @@ router.get('/', function(req, res, next) {
   });
   res.end();
 });
+
+router.get('/post', function(req, res, next) {
+  var credentials = auth(req)
+
+  if (!credentials || credentials.name !== 'john' || credentials.pass !== 'secret') {
+    res.statusCode = 401
+    res.setHeader('WWW-Authenticate', 'Basic realm="example"')
+    res.end('Access denied')
+  } else {
+    res.end('Access granted')
+  }
+})
 
 /* GET home page. */
 router.get('/:url', function(req, res, next) {
