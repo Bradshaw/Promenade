@@ -49,19 +49,18 @@ block content
             if entry.post.hasOwnProperty("media")
               a(href=entry.post.media style="background-color: "+entry.profile.color+";")
                 img.media(src=entry.post.media style="background-color: "+entry.profile.color+";")
-            .aandt
-              img.feedavatar(src = entry.profile.avatar)
-              .postcontent
-                p.text= entry.post.text
-                  |  
-                  if entry.post.hasOwnProperty("url")
-                    a.link(href = entry.post.url style="color: "+entry.profile.color+";")= "→"
-            p.date
-              |Posted 
-              if entry.post.hasOwnProperty("time")
-                | #{formatDate(new Date(parseInt(entry.post.time * 1000)))}
-              |  by 
-              a.link(href = "/"+entry.url.replace("http://","") style="color: "+entry.profile.color+";")= entry.profile.name
-              | 
-              a.link(href = entry.url style="color: grey;") .json
+            img.feedavatar(src = entry.profile.avatar)
+            .postcontent
+              p.text.feedtext= entry.post.text
+                |  
+                if entry.post.hasOwnProperty("url")
+                  a.link(href = entry.post.url style="color: "+entry.profile.color+";")= "→"
+              p.date
+                |Posted 
+                if entry.post.hasOwnProperty("time")
+                  | #{formatDate(new Date(parseInt(entry.post.time * 1000)))}
+                |  by 
+                a.link(href = "/"+entry.url.replace("http://","") style="color: "+entry.profile.color+";")= entry.profile.name
+                | 
+                a.link(href = entry.url style="color: grey;") .json
                     
