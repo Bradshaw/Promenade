@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var http = require('http');
 var auth = require('basic-auth')
-
+var async = require('async')
+var request = require('request');
 
 var starturl = 'logs.spaceshipsin.space';
 
@@ -58,7 +59,12 @@ router.get('/:url', function(req, res, next) {
     hres.on('end', () => {
       try {
         const parsedData = JSON.parse(rawData);
-        res.render('rotonde', parsedData);
+        
+        getAll(parsedData.portal, function(feed) {
+            parsedData.portalFeed = feed;
+            res.render('rotonde', parsedData);
+        });
+        
       } catch (e) {
         next()
       }
@@ -67,5 +73,56 @@ router.get('/:url', function(req, res, next) {
     next()
   });
 });
+
+function httpGet(url, callback) {
+  var prefix = 'http://';
+  if (url.substr(0, prefix.length) !== prefix)
+  {
+      url = prefix + url;
+  }
+  const options = {
+    url :  url,
+    json : true
+  };
+  request(options,
+    function(err, res, body) {
+      if (typeof body == 'object'){
+        body.url = url;
+      }
+      callback(err, body);
+    }
+  );
+}
+
+function getAll(rotondes, cb) {
+  async.map(rotondes, httpGet, function (err, res){
+    if (err){
+      cb([]);
+      return;
+    } else {
+      var feed = []
+      console.log("-------");
+      for (var v in res) {
+        if (res.hasOwnProperty(v)) {
+          if (typeof res[v] == 'object'){
+              var rot = res[v];
+              feed = feed.concat(rot.feed.map(function(post){
+                return {
+                  url: rot.url,
+                  profile: rot.profile,
+                  post: post
+                }
+              }));
+          }
+        }
+      }
+      feed.sort(function(a, b){
+        return a.post.date-b.post.date;
+      })
+      feed = feed.slice(0,30);
+      cb(feed);
+    }
+  });
+}
 
 module.exports = router;

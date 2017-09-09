@@ -1,47 +1,80 @@
+*
+  //outline: 1px rgba(255,0,0,1) solid
+
 body
-  padding: 50px
-  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif
+  padding: 0.4em
+  font-family: sans-serif
+  font-size: 1em
 
-a
-  color: #00B7FF
-
-.avatar
-  max-width: 100%
-
-.profile>.text
-  padding: 50px
-  background-color: rgba(0,0,0,0.75)
-  color: white
-
-.img
-  height: 100px
-  background-position: center
-
-.entry
-  margin: 10px
-  background-color: black
-  color: white
+.rotonde
+  outline: 1em solid
+  padding: 0.4em
+  background-color: white  
   
-.value>.overlay
-  background-color: gray
-  
-.extra
-  overflow: hidden
-  max-height: 0
-  
-.entry:hover>.extra
-  max-height: 100vh
-  transition: max-height 0.5s ease
-  
-.portal
+.profile
+  display: flex
+  flex-wrap: wrap
+  width: 100%
   padding: 10px
-  margin: 10px
-  background-color: black
-  color: white
-  height: 100%
   
-.sides
-  column-count: 2
+.avatar
+  width: 6em
+  height: 6em
+  border-radius: 0.4em
+  margin-right: 1em
+  
+.feedavatar
+  //float: left
+  width: 2em
+  height: 2em
+  border-radius: 0.2em
+  margin: 0.5em
 
+.feed-container
+  padding: 0.4em
+  display: flex
+  flex-wrap: wrap
+
+.link
+  //font-family: monospace
+  text-decoration: none
   
+.minilink
+  font-size: 0.75em
+  text-decoration: none
   
+.aandt
+  vertical-align: top
+  display: flex
+  flex-wrap: nowrap
+
+.col
+  padding: 0.4em
+  min-width: 30em
+  flex: 1
+  
+.media
+  display: block
+  min-height: 0
+  width: 100%
+  
+.post
+  margin: 0.5em 0
+  background-color: darken(white, 90%)
+  border: 0.1em
+  border-style: solid
+  color: darken(white, 10%)
+
+.postcontent>.text
+  margin: 0.5em 0
+
+.date
+  color: grey
+  font-size: 0.75em
+
+.text
+  vertical-align: top
+  font-weight: lighter
+
+.post>p
+  margin: 0.5em

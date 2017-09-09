@@ -1,30 +1,67 @@
 extends layout
-
 block content
-  .holder(style = "background-color: "+profile.color+";")
+  - 
+    function formatDate(date) {
+    var monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+    var hours = date.getHours();
+    var minutes = "" + date.getMinutes();
+    if (minutes.length<2)
+      minutes = "0"+minutes;
+
+    return day + ' ' + monthNames[monthIndex] + ' ' + year + ' - ' + hours + ':' + minutes;
+    }
+
+  .rotonde(style = "outline-color: "+profile.color+";")
     .profile
-      .sides
-        img(src = profile.avatar).avatar
-        .portal
-          h4= profile.name+" suggests the following"
-          each url in portal
-            .link
-              a(href = "/"+url.replace("http://",""))= url.replace("http://","")
-      .text
-        h1= profile.name
-        if profile.position && profile.location
-          a(href = "https://www.openstreetmap.org/#map=6/"+profile.position.replace(", ","/"))= profile.location
-    each entry in feed
-      .entry
-        if entry.media
-          .img(style = "background-image: url("+entry.media+")")
-        .text
-          p= entry.text
-        .extra
-          if entry.url
-            a(href = entry.url) More
-          if entry.data
-            each value, key in entry.data
-              .value
-                .overlay(style = "width: "+(value*100)+"%;")= (key+": "+value)
-                  
+      img(src = profile.avatar).avatar
+      .deets
+        p= profile.name
+        if profile.location
+          if profile.position
+            a.link(href = "https://www.openstreetmap.org/#map=6/"+profile.position.replace(", ","/") style="color: "+profile.color+";") 🌍:#{profile.location}→
+          else
+            p.link(style="color: "+profile.color+";") 🌍:#{profile.location}
+    .feed-container
+      .col
+        each entry in feed
+          .post(style = "border-color: "+profile.color+";")
+            if entry.hasOwnProperty("media")
+              a(href=entry.media)
+                img.media(src=entry.media)
+            p.text= entry.text
+              |  
+              if entry.hasOwnProperty("url")
+                a.link(href = entry.url style="color: "+profile.color+";")= "→"
+            if entry.hasOwnProperty("time")
+              p.date= formatDate(new Date(parseInt(entry.time * 1000)))
+      .col
+        each entry in portalFeed
+          .post(style = "border-color: "+entry.profile.color+";")
+            if entry.post.hasOwnProperty("media")
+              a(href=entry.post.media style="background-color: "+entry.profile.color+";")
+                img.media(src=entry.post.media style="background-color: "+entry.profile.color+";")
+            .aandt
+              img.feedavatar(src = entry.profile.avatar)
+              .postcontent
+                p.text= entry.post.text
+                  |  
+                  if entry.post.hasOwnProperty("url")
+                    a.link(href = entry.post.url style="color: "+entry.profile.color+";")= "→"
+            p.date
+              |Posted 
+              if entry.post.hasOwnProperty("time")
+                | #{formatDate(new Date(parseInt(entry.post.time * 1000)))}
+              |  by 
+              a.link(href = "/"+entry.url.replace("http://","") style="color: "+entry.profile.color+";")= entry.profile.name
+              | 
+              a.link(href = entry.url style="color: grey;") .json
+                    
