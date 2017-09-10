@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "version":"0.0.1-metaprop",
+    "canonical": "<url>"
+  },
+  "profile":
+  {
+    "name":"<canonical>",
+    "color":"#FFFFFF"
+  },
+  "feed":[],
+  "portal":[]
+}
