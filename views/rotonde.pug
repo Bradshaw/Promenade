@@ -36,7 +36,10 @@ block content
         p= profile.name
         if profile.location
           if profile.position
-            a.link(href = "https://www.openstreetmap.org/#map=6/"+profile.position.replace(", ","/") style="color: "+profile.color+";") 🌍:#{profile.location}→
+            -
+              profile.position = profile.position.replace(" ","");
+              pos = profile.position.split(",");
+            a.link(href = "https://www.openstreetmap.org/?mlat="+pos[0]+"&mlon="+pos[1]+"#map=6/"+pos[0]+"/"+pos[1] style="color: "+profile.color+";") 🌍:#{profile.location}→
           else
             p.link(style="color: "+profile.color+";") 🌍:#{profile.location}
     .feed-container
