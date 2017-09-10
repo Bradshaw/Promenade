@@ -45,18 +45,21 @@ router.get('/:url', function(req, res, next) {
   };
   request(options,
     function(err, rs, parsedData) {
-      console.log(parsedData);
-      fixRotonde(parsedData, req.params.url);
-      if (err){
-        next();
+      if (parsedData) {
+        fixRotonde(parsedData, req.params.url);
+        if (err){
+          next();
+        } else {
+          parsedData.feed.sort(function(a,b){
+            return b.time-a.time
+          })
+          getAll(parsedData.portal, function(feed) {
+              parsedData.portalFeed = feed;
+              res.render('rotonde', parsedData);
+          }, [req.params.url]);
+        }
       } else {
-        parsedData.feed.sort(function(a,b){
-          return b.time-a.time
-        })
-        getAll(parsedData.portal, function(feed) {
-            parsedData.portalFeed = feed;
-            res.render('rotonde', parsedData);
-        }, [req.params.url]);
+        next();
       }
     }
   );
