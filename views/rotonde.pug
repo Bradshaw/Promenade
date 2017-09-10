@@ -2,24 +2,33 @@ extends layout
 block content
   - 
     function formatDate(date) {
-    var monthNames = [
-      "January", "February", "March",
-      "April", "May", "June", "July",
-      "August", "September", "October",
-      "November", "December"
-    ];
+      var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+      ];
 
-    var day = date.getDate();
-    var monthIndex = date.getMonth();
-    var year = date.getFullYear();
-    var hours = date.getHours();
-    var minutes = "" + date.getMinutes();
-    if (minutes.length<2)
-      minutes = "0"+minutes;
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+      var hours = date.getHours();
+      var minutes = "" + date.getMinutes();
+      if (minutes.length<2)
+        minutes = "0"+minutes;
 
-    return day + ' ' + monthNames[monthIndex] + ' ' + year + ' - ' + hours + ':' + minutes;
+      return day + ' ' + monthNames[monthIndex] + ' ' + year + ' - ' + hours + ':' + minutes;
     }
-
+    Object.prototype.isThing = function(key){
+      if (!this.hasOwnProperty(key)){
+        return false;
+      } else {
+        if (this[key])
+          return true;
+        else
+          return false;
+      }
+    }
   .rotonde(style = "outline-color: "+profile.color+";")
     .profile
       img(src = profile.avatar).avatar
