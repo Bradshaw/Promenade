@@ -6,7 +6,7 @@
         | 
         a.link(href = "/"+meta.canonical style = "color: "+profile.color+";")= meta.canonical
         | 
-        a.link(href = meta.canonical style = "color: grey;") .json
+        a.link(href = "http://"+meta.canonical style = "color: grey;") .json
       if profile.bio
         br
         | #{profile.bio}
