@@ -6,6 +6,7 @@ var async = require('async')
 var request = require('request');
 var fs = require('fs');
 var path = require('path');
+var URL = require('url');
 var appDir = path.dirname(require.main.filename);
 appDir = path.join(appDir, "..");
 
@@ -65,6 +66,45 @@ router.get('/:url', function(req, res, next) {
   );
 });
 
+router.get('/:url/single-post/:id', function(req, res, next) {
+  var prefix = 'http://';
+  var url = req.params.url;
+  if (url.substr(0, prefix.length) !== prefix)
+  {
+      url = prefix + url;
+  }
+  var options = {
+    url :  url,
+    json : true
+  };
+  request(options,
+    function(err, rs, parsedData) {
+      if (parsedData) {
+        fixRotonde(parsedData, req.params.url);
+        if (parsedData.meta && parsedData.meta.options){
+          var so = parsedData.meta.options.filter(function(elem){
+            return elem.id.indexOf('SinglePost')>=0;
+          })[0];
+          if (so) {
+            var spath = so.data.path.replace(":id",req.params.id);
+            var options = {
+              url : URL.resolve(url, spath),
+              json : true
+            };
+            request(options, function(err, rs, parsedData) {
+              fixRotonde(parsedData, req.params.url);
+              parsedData.portalFeed = [];
+              res.render('single', parsedData);
+            });
+          }
+        }
+      } else {
+        next();
+      }
+    }
+  );
+});
+
 function fixRotonde(rotonde, url) {
   var url = url.replace("http://","");
   var defaultRot = JSON.parse(fs.readFileSync(path.join(appDir, "public", "default.json")));
@@ -95,17 +135,27 @@ function fixRotonde(rotonde, url) {
   }
 }
 function httpGet(url, callback) {
+  var t = (new Date()).getTime();
   var prefix = 'http://';
   if (url.substr(0, prefix.length) !== prefix)
   {
       url = prefix + url;
   }
+  console.log("Getting "+url);
   const options = {
     url :  url,
-    json : true
+    json : true,
+    timeout : 2000
   };
   request(options,
     function(err, res, body) {
+      if (err){
+        var t2 = (new Date()).getTime();
+        console.log("Timed out "+url+" at "+((t2-t)/1000)+" seconds");
+      } else {
+        var t2 = (new Date()).getTime();
+        console.log("Got "+url+" in "+((t2-t)/1000)+" seconds");
+      }
       if (typeof body == 'object'){
         fixRotonde(body, url);
         body.url = url;
@@ -120,32 +170,27 @@ function getAll(rotondes, cb, ignores) {
     return url.replace("http://","");
   });
   async.map(rotondes, httpGet, function (err, res){
-    if (err){
-      cb([]);
-      return;
-    } else {
-      var feed = []
-      console.log("-------");
-      for (var v in res) {
-        if (res.hasOwnProperty(v)) {
-          if (typeof res[v] == 'object' && !ignores.includes(res[v].url.replace("http://",""))) {
-              var rot = res[v];
-              feed = feed.concat(rot.feed.map(function(post){
-                return {
-                  url: rot.url,
-                  profile: rot.profile,
-                  post: post
-                }
-              }));
-          }
+    var feed = []
+    console.log("-------");
+    for (var v in res) {
+      if (res.hasOwnProperty(v)) {
+        if (typeof res[v] == 'object' && !ignores.includes(res[v].url.replace("http://",""))) {
+            var rot = res[v];
+            feed = feed.concat(rot.feed.map(function(post){
+              return {
+                url: rot.url,
+                profile: rot.profile,
+                post: post
+              }
+            }));
         }
       }
-      feed.sort(function(a, b){
-        return b.post.time-a.post.time;
-      })
-      feed = feed.slice(0,30);
-      cb(feed);
     }
+    feed.sort(function(a, b){
+      return b.post.time-a.post.time;
+    })
+    feed = feed.slice(0,30);
+    cb(feed);
   });
 }
 Object.prototype.isThing = function(key){

@@ -1,0 +1,24 @@
+extends layout
+block content
+  include utils.pug
+  .rotonde(
+    style = "outline-color: "+profile.color+"; color: "+tc(profile.color)+"; background-color: "+bc(profile.color)+"; "
+    )
+    include profile.pug
+    .feed-container
+      .col
+        .title
+          hr(noshade).line
+          h single
+          hr(noshade).line
+        each entry in feed
+          .post(style = "border-color: "+profile.color+";")
+            if entry.hasOwnProperty("media")
+              a(href=entry.media)
+                img.media(src=entry.media)
+            p.text= entry.text
+              |  
+              if entry.hasOwnProperty("url")
+                a.link(href = entry.url style="color: "+profile.color+";")= "→"
+            if entry.hasOwnProperty("time")
+              p.date= formatDate(new Date(parseInt(entry.time * 1000)))
