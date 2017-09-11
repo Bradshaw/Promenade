@@ -1,7 +1,8 @@
 doctype html
-html
+include utils.pug
+html(style = "background-color:"+profile.color+";")
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body
+  body(style = "border-color:"+profile.color+"; background-color:"+bc(profile.color)+";")
     block content

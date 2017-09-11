@@ -141,20 +141,17 @@ function httpGet(url, callback) {
   {
       url = prefix + url;
   }
-  console.log("Getting "+url);
   const options = {
     url :  url,
     json : true,
-    timeout : 2000
+    timeout : 1000
   };
   request(options,
     function(err, res, body) {
       if (err){
         var t2 = (new Date()).getTime();
-        console.log("Timed out "+url+" at "+((t2-t)/1000)+" seconds");
       } else {
         var t2 = (new Date()).getTime();
-        console.log("Got "+url+" in "+((t2-t)/1000)+" seconds");
       }
       if (typeof body == 'object'){
         fixRotonde(body, url);
@@ -180,7 +177,8 @@ function getAll(rotondes, cb, ignores) {
               return {
                 url: rot.url,
                 profile: rot.profile,
-                post: post
+                post: post,
+                meta: rot.meta
               }
             }));
         }

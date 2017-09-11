@@ -1,8 +1,15 @@
 *
   //outline: 1px rgba(255,0,0,1) solid
 
+html, body
+  min-height: 100vh
+
 body
-  padding: 0.4pc
+  background-clip: content-box
+  box-sizing: border-box
+  margin: 0
+  padding: 1pc
+  border-width: 1pc
   font-family: sans-serif
   font-size: 1pc
 
@@ -22,15 +29,14 @@ body
   height: 1px
 
 .rotonde
-  outline: 1pc solid
-  padding: 0.4pc
+  min-height: 100%
+  //outline: 1pc solid
   //color: darken(white, 80%)
   //background-color: darken(white, 3%)
   
 .profile
   display: flex
   flex-wrap: wrap
-  width: 100%
   padding: 10px
   
 .avatar
@@ -44,15 +50,25 @@ body
   width: 2pc
   height: 2pc
   border-radius: 0.2pc
-  margin: 0.5pc
+  margin: 1pc
 
 .feed-container
+  width: 99%
   padding: 0.4pc
   display: flex
   flex-wrap: wrap
 
 .bio
   line-height: 1.2em
+
+.postfooter
+  clear: both
+
+.right
+  float: right
+  
+.left
+  float: left
 
 .link
   //font-family: monospace
@@ -90,12 +106,12 @@ body
   overflow: hidden
 
 .postcontent>.text
-  margin: 0.5pc 0
+  margin: 1pc 0
 
 .date
-  padding-top: -1.5pc
-  margin-top: 1.5pc
+  margin-top: 0
   margin-left: 1pc
+  margin-right: 1pc
   color: grey
   font-size: 0.75pc
 
@@ -108,4 +124,4 @@ body
 
 
 .post>p
-  margin: 0.5pc
+  margin: 1pc

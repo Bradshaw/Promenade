@@ -1,6 +1,5 @@
 extends layout
 block content
-  include utils.pug
   .rotonde(
     style = "outline-color: "+profile.color+"; color: "+tc(profile.color)+"; background-color: "+bc(profile.color)+"; "
     )
@@ -16,14 +15,14 @@ block content
             if entry.hasOwnProperty("media")
               a(href=entry.media)
                 img.media(src=entry.media)
-            p.text= entry.text
-              |  
+            p.text= entry.text+" "
               if entry.hasOwnProperty("url")
                 a.link(href = entry.url style="color: "+profile.color+";")= "→"
-            if entry.hasOwnProperty("time")
-              p.date= formatDate(new Date(parseInt(entry.time * 1000)))
-            if getOption(meta,"SinglePost")
-              a.link.right(href="/"+meta.canonical+"/single-post/"+entry.id) permalink
+            .postfooter
+              if entry.hasOwnProperty("time")
+                p.date.left= formatDate(new Date(parseInt(entry.time * 1000)))
+              if getOption(meta,"SinglePost")
+                a.date.link.right(href="/"+meta.canonical+"/single-post/"+entry.id style="color: "+profile.color+";") permalink
       .col
         .title
           hr(noshade).line
@@ -38,16 +37,18 @@ block content
                 img.media(src=entry.post.media style="background-color: "+entry.profile.color+";")
             img.feedavatar(src = entry.profile.avatar)
             .postcontent
-              p.text.feedtext= entry.post.text
-                |  
+              p.text.feedtext= entry.post.text+" "
                 if entry.post.hasOwnProperty("url")
                   a.link(href = entry.post.url style="color: "+entry.profile.color+";")= "→"
-              p.date
-                |Posted 
-                if entry.post.hasOwnProperty("time")
-                  | #{formatDate(new Date(parseInt(entry.post.time * 1000)))}
-                |  by 
-                a.link(href = "/"+entry.url.replace("http://","") style="color: "+entry.profile.color+";")= entry.profile.name
-                | 
-                a.link(href = entry.url style="color: grey;") .json
+              .postfooter
+                p.date.left
+                  |Posted 
+                  if entry.post.hasOwnProperty("time")
+                    | #{formatDate(new Date(parseInt(entry.post.time * 1000)))}
+                  |  by 
+                  a.link(href = "/"+entry.url.replace("http://","") style="color: "+entry.profile.color+";")= entry.profile.name
+                  | 
+                  a.link(href = entry.url style="color: grey;") .json
+                if getOption(entry.meta,"SinglePost")
+                  a.date.link.right(href="/"+entry.meta.canonical+"/single-post/"+entry.post.id style="color: "+entry.profile.color+";") permalink
                     

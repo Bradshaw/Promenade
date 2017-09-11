@@ -1,8 +1,7 @@
 extends layout
 block content
-  include utils.pug
   .rotonde(
-    style = "outline-color: "+profile.color+"; color: "+tc(profile.color)+"; background-color: "+bc(profile.color)+"; "
+    style = "outline-color: "+profile.color+"; color: "+tc(profile.color)+";"
     )
     include profile.pug
     .feed-container
