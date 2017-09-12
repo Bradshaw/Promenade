@@ -21,4 +21,7 @@
             pos = profile.position.split(",");
           a.link(href = "https://www.openstreetmap.org/?mlat="+pos[0]+"&mlon="+pos[1]+"#map=6/"+pos[0]+"/"+pos[1] style="color: "+profile.color+";") 🌍:#{profile.location}→
         else
-          p.link(style="color: "+profile.color+";") 🌍:#{profile.location}
+          span.link(style="color: "+tc(profile.color)+";") 🌍:#{profile.location}
+      if (getOption(meta,"SubmitBasicAuth"))
+        br
+        a.link(href="/"+meta.canonical+"/post" style="color: "+profile.color+";") New post

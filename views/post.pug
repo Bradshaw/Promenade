@@ -1,0 +1,146 @@
+extends layout
+block content
+  script(
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+    crossorigin="anonymous"
+    )
+  .rotonde(
+    style = "outline-color: "+profile.color+"; color: "+tc(profile.color)+";"
+    )
+    include profile.pug
+    .feed-container
+      .col
+        .title
+          hr(noshade).line
+          h new post
+          hr(noshade).line
+        .newpost
+          form#newpost
+            .date Text
+            .date
+              .formheader 
+              textarea(style = "color: "+tc(profile.color)+";" type="text" name="text" rows="6")
+            .date
+              .formheader User
+              input(style = "color: "+tc(profile.color)+";" type="text" name="user")
+            .date
+              .formheader Pass  
+              input(style = "color: "+tc(profile.color)+";" type="password" name="pass")
+            .date
+              .formheader Topic
+              input(style = "color: "+tc(profile.color)+";" type="text" name="topic")
+            .date
+              .formheader Task
+              input(style = "color: "+tc(profile.color)+";" type="text" name="task")
+            .date
+              .formheader Link
+              input(style = "color: "+tc(profile.color)+";" type="text" name="link")
+            .date
+              .formheader Media
+              input(style = "color: "+tc(profile.color)+";" type="text" name="media")
+            .date
+              .formheader
+              input#postbutton.submit(style = "color: "+profile.color+";" type="button" name="post" value="Post")
+        br
+        .date Preview
+        .post(style = "border-color: "+profile.color+";")
+          a
+            img.media#postmedia
+          p.text#posttext 
+            |  
+            a.link.hidden#postlink(style="color: "+profile.color+";")= "→"
+          .postfooter
+            p.date.left#curdate= formatDate(new Date())
+        -
+          var postpath = getOption(meta, "SubmitBasicAuth").data.path;
+        script.
+        
+          function post(url, params, auth){
+            var http = new XMLHttpRequest();
+            var params = JSON.stringify(params);
+            http.open("POST", url, true);
+
+            //Send the proper header information along with the request
+            http.setRequestHeader("Content-type", "application/json");
+            http.setRequestHeader('Authorization','Basic ' + auth);
+            http.onreadystatechange = function() {//Call a function when the state changes.
+                if(http.readyState == 4 && http.status == 200) {
+                    window.location.href = "http://#{meta.canonical}";
+                }
+            }
+            http.send(params);
+          }
+          document.getElementById("postbutton").addEventListener("click",function(){
+            var postdata = {};
+            postdata.options = {};
+            if (newpost.text.value.length>0)
+              postdata.text = newpost.text.value;
+            if (newpost.link.value.length>0)
+              postdata.options.url = newpost.link.value;
+            if (newpost.media.value.length>0)
+              postdata.options.media = newpost.media.value;
+            if (newpost.topic.value.length>0)
+              postdata.options.topic = newpost.topic.value;
+            if (newpost.task.value.length>0)
+              postdata.options.task = newpost.task.value;
+            //console.log(postdata);
+            post("http://#{meta.canonical+postpath}",postdata,btoa(newpost.user.value+":"+newpost.pass.value));
+          });
+          function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+          }
+          function formatDate(date) {
+            var monthNames = [
+              "January", "February", "March",
+              "April", "May", "June", "July",
+              "August", "September", "October",
+              "November", "December"
+            ];
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+            var hours = date.getHours();
+            var minutes = "" + date.getMinutes();
+            var seconds = "" + date.getSeconds();
+            if (minutes.length<2)
+              minutes = "0"+minutes;
+            if (seconds.length<2)
+              seconds = "0"+seconds;
+
+            return day + ' ' + monthNames[monthIndex] + ' ' + year + ' - ' + hours + ':' + minutes + ":" + seconds;
+          }
+          var curdate = document.getElementById("curdate");
+          var posttext = document.getElementById("posttext");
+          var postlink = document.getElementById("postlink");
+          var postmedia = document.getElementById("postmedia");
+          var newpost = document.getElementById("newpost");
+          newpost.addEventListener("input",function(){
+            if (newpost.link.value.length==0)
+              postlink.removeAttribute("href");
+            else{
+              var s = newpost.link.value;
+              if (!s.match(/^[a-zA-Z]+:\/\//)) {
+                s = 'http://' + s;
+              }
+              postlink.href = s;
+            }
+            postmedia.src = newpost.media.value;
+            posttext.innerHTML = escapeHtml(newpost.text.value)+"&nbsp;"+postlink.outerHTML;
+            if (postlink.href.length==0){
+              postlink.classList.add("hidden");
+            } else {
+              postlink.classList.remove("hidden");
+            }
+            if (postmedia.src.length==0){
+              postmedia.classList.add("hidden");
+            } else {
+              postmedia.classList.remove("hidden");
+            }
+          })
+          setInterval(function(){
+            curdate.innerText = formatDate(new Date());
+          }, 250);

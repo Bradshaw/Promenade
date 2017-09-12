@@ -20,16 +20,34 @@ router.get('/', function(req, res, next) {
   res.end();
 });
 
-router.get('/post', function(req, res, next) {
-  var credentials = auth(req)
-
-  if (!credentials || credentials.name !== 'john' || credentials.pass !== 'secret') {
-    res.statusCode = 401
-    res.setHeader('WWW-Authenticate', 'Basic realm="example"')
-    res.end('Access denied')
-  } else {
-    res.end('Access granted')
+router.get('/:url/post', function(req, res, next) {
+  var prefix = 'http://';
+  var url = req.params.url;
+  if (url.substr(0, prefix.length) !== prefix)
+  {
+      url = prefix + url;
   }
+  const options = {
+    url :  url,
+    json : true
+  };
+  request(options,
+    function(err, rs, parsedData) {
+      if (parsedData) {
+        fixRotonde(parsedData, req.params.url);
+        if (err){
+          next();
+        } else {
+          parsedData.feed.sort(function(a,b){
+            return b.time-a.time
+          })
+          res.render('post', parsedData);
+        }
+      } else {
+        next();
+      }
+    }
+  );
 })
 
 /* GET home page. */
